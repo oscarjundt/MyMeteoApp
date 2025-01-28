@@ -1,10 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StyleSheet,TextInput, Text, View } from 'react-native';
+import Meteo from './Meteo';
+import { useState } from 'react';
 export default function App() {
+  const [dt,setDt] = useState(new Date().toISOString().split('T')[0])
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <TextInput
+      value={dt}
+      placeholder='YYY-mm-dd'
+      onChangeText={setDt}
+      />
+      <Meteo
+      val={dt}
+      />
       <StatusBar style="auto" />
     </View>
   );
