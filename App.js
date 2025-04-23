@@ -10,22 +10,24 @@ export default function App() {
   const [currentWeather,setCurrentWeather] = useState(null);
   const [forecastWeather,setForecastWeather] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [input,setInput] = useState("");
   let ApiOther = "api.openweathermap.org/data/2.5/forecast";
   let Api = "https://api.openweathermap.org/data/3.0/onecall?units=metric&lat="+location?.latitude+"&lon="+location?.longitude+"&exclude=hourly,minutely&appid=d6def4924ad5f9a9b59f3ae895b234cb";
   
   useEffect(() => {
     const constinitTasks = async () => {
       try {
+        let Api = "https://api.openweathermap.org/data/3.0/onecall?units=metric&lat="+location?.latitude+"&lon="+location?.longitude+"&exclude=hourly,minutely&appid=d6def4924ad5f9a9b59f3ae895b234cb";
         const response = await axios.get(Api);
         const data = response.data;
         setCurrentWeather(data.current);
         setForecastWeather(data.daily.splice(1,5));
       } catch (e) { 
-        console.log("Erreur lors de l'appel à l'API : " + e); 
+        console.log("Erreur lors de l'appel à l'API2 : " + e); 
       }
     };
     constinitTasks()
-  },[]);
+  },[location]);
   useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,16 +43,16 @@ export default function App() {
         setErrorMsg('Erreur lors de la récupération de la localisation');
         console.error(error);
       }finally {
-        setIsLoading(false); // Masque le loader une fois la récupération terminée
+        setIsLoading(false);
       }
     };
 
     getLocation();
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
 
   if (isLoading) {
-    // Affiche le loader en plein écran pendant le chargement
+
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -66,14 +68,15 @@ export default function App() {
       style={styles.header}
       meteo={currentWeather}
       />
+      <TextInput type="text" onChangeText={(text)=>{
+        setInput(text);
+      }} value={input}/>
       <Button
       onPress={async () => {
         try {
-          console.log(Api);
-          const response = await axios.get(Api);
-          const data = response.data;
-          setCurrentWeather(data.current);
-          setForecastWeather(data.daily.splice(1,5));
+          const response = await axios.get("https://api.openweathermap.org/geo/1.0/direct?q="+input+",fr&limit=1&appid=d6def4924ad5f9a9b59f3ae895b234cb");
+          const data = response.data[0];
+          setLocation({"latitude":data.lat,"longitude":data.lon});
         } catch (e) { 
           console.log("Erreur lors de l'appel à l'API : " + e); 
         }
