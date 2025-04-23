@@ -7,7 +7,7 @@ export default function CurrentWeather({meteo,style}) {
 
   return (
     <View style={style}>
-      <Text>{new Date(meteo?.dt*1000).toLocaleString()}</Text>
+      <Text>{new Date(meteo?.dt * 1000).toLocaleDateString('fr-FR')}</Text>
       <Text>{parseInt(meteo?.temp?.day)}°</Text>
       <StatusBar style="auto" />
     </View>
